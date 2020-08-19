@@ -3,6 +3,7 @@ package com.lujieni.ftp.utils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,13 +12,18 @@ import java.io.InputStream;
  * @Auther lujieni
  * @Date 2020/6/11
  */
-public class FtpUtil {
+public final class FtpUtil {
+
+    private FtpUtil(){
+
+    }
+
     public static Boolean uploadFile(String host, int port, String username, String password, String basePath,
                                      String filePath, String fileName, InputStream inputStream) throws IOException {
         //1、创建临时路径
         String tempPath="";
         //2、创建FTPClient对象（对于连接ftp服务器，以及上传和上传都必须要用到一个对象）
-        FTPClient ftp=new FTPClient();
+        FTPClient ftp = new FTPClient();
         try{
             //3、定义返回的状态码
             int reply;
@@ -26,19 +32,20 @@ public class FtpUtil {
             //5、输入账号和密码进行登录
             ftp.login(username,password);
             //6、接受状态码(如果成功，返回230，如果失败返回503)
-            reply=ftp.getReplyCode();
+            reply = ftp.getReplyCode();
             //7、根据状态码检测ftp的连接，调用isPositiveCompletion(reply)-->如果连接成功返回true，否则返回false
-            if(!FTPReply.isPositiveCompletion(reply)){
+            if( ! FTPReply.isPositiveCompletion(reply)){
                 //说明连接失败，需要断开连接
                 ftp.disconnect();
                 return false;
             }
-            //8、changWorkingDirectory(linux上的文件夹)：检测所传入的目录是否存在，如果存在返回true，否则返回false
-            //basePath+filePath-->/lujieni/docs
+            //8、changWorkingDirectory(linux上的文件夹):检测所传入的目录是否存在,如果存在返回true,否则返回false
+            //basePath+filePath-->/lujieni/docs/
             String fullPath = basePath + filePath;
+            /* 路径不存在的话 */
             if(!ftp.changeWorkingDirectory(fullPath)){
                 //9、截取filePath:/29-->String[]:"" 29
-                String[] dirs=fullPath.split("/");// ["","lujieni","","docs"]
+                String[] dirs = fullPath.split("/");// ["","lujieni","","docs"]
                 //10、把basePath(/home/ftp/www)-->tempPath
                 for(int i = 0;i < dirs.length;i++){
                     //11、循环数组(第一次循环)
@@ -46,7 +53,7 @@ public class FtpUtil {
                         tempPath = dirs[0];
                         ftp.changeWorkingDirectory(tempPath);
                     }else{
-                        if(dirs[i] == null || dirs[i].equals(""))
+                        if(StringUtils.isEmpty(dirs[i]))
                             continue;
                         //12、更换临时路径:/lujieni
                         tempPath += "/" + dirs[i];

@@ -26,7 +26,7 @@ public class FtpApplicationTests {
       try(InputStream is = new BufferedInputStream(this.getClass().getResourceAsStream("/excel/c.xlsx"))){
           FtpUtil.uploadFile(ftpProperties.getHost(),ftpProperties.getPort(),
                              ftpProperties.getUsername(),ftpProperties.getPassword(),
-                             ftpProperties.getBasePath(),"/docs/","bbb.xlsx",is);
+                             ftpProperties.getBasePath(),"/haha/","bbb.xlsx",is);
       }catch (Exception e){
           System.out.println(e);
       }
