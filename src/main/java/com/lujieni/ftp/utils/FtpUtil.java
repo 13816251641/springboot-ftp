@@ -72,7 +72,7 @@ public final class FtpUtil {
             }
             //16.把文件转换为二进制字符流的形式进行上传
             ftp.setFileType(FTP.BINARY_FILE_TYPE);
-            //17、这才是真正上传方法storeFile(filename,input),返回Boolean雷类型，上传成功返回true
+            //17、这才是真正上传方法storeFile(filename,input),返回Boolean类型，上传成功返回true
             if (!ftp.storeFile(fileName, inputStream)) {
                 return false;
             }
